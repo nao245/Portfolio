@@ -31,11 +31,19 @@
         from { transform: scale(0.95); opacity: 0.8; }
         to { transform: scale(1); opacity: 1; }
       }
+      @keyframes subtlePulse {
+        0% { transform: scale(1.5); }
+        50% { transform: scale(1.58); }
+        100% { transform: scale(1.5); }
+      }
       .animate-fade-in {
         animation: fadeIn 0.3s ease-out forwards;
       }
       .animate-scale-up {
         animation: scaleUp 0.3s ease-out forwards;
+      }
+      .animate-subtle-pulse {
+        animation: subtlePulse 8s ease-in-out infinite;
       }
     </style>
   <script type="importmap">
