@@ -81,7 +81,7 @@ const Modal: React.FC<ModalProps> = ({ photos, currentIndex, onClose }) => {
               <InfoRow 
                 icon={<CameraIcon className="w-5 h-5" />} 
                 label="使用機材" 
-                value={`${photo.camera || ''}${photo.lens ? `\n${photo.lens}` : ''}`}
+                value={[photo.camera, photo.lens].filter(Boolean).join('\n')}
               />
               <InfoRow icon={<SettingsIcon className="w-5 h-5" />} label="撮影設定 (EXIF)" value={photo.settings} />
             </div>

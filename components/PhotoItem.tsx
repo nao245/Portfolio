@@ -13,7 +13,7 @@ interface PhotoItemProps {
 const PhotoItem: React.FC<PhotoItemProps> = ({ photo, onClick, isVisible, isCentered, isMobile }) => {
   const visibilityClass = isVisible ? "opacity-100 translate-y-0 scale-100" : "opacity-0 translate-y-10 scale-95";
   const glowClass = (isCentered && !isMobile) ? "opacity-100" : "opacity-0";
-  const colorClass = (isMobile || isCentered) ? 'grayscale-0' : 'grayscale';
+  const colorClass = 'grayscale-0';
 
   return (
     <div 
