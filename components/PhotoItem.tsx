@@ -27,7 +27,7 @@ const PhotoItem: React.FC<PhotoItemProps> = ({ photo, onClick, isVisible, isCent
         <img 
           src={photo.src} 
           alt={photo.alt}
-          className="h-full w-auto object-cover transition-all duration-700"
+          className={`h-full w-auto object-cover transition-all duration-1000 ease-in-out ${isCentered ? 'grayscale-0' : 'grayscale'}`}
           loading="lazy"
         />
       </div>

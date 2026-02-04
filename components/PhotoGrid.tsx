@@ -40,6 +40,13 @@ const PhotoGrid: React.FC<PhotoGridProps> = ({ photos, onPhotoClick }) => {
         threshold: 0.1,
       }
     );
+    
+    const getCenterObserverMargin = () => {
+      if (window.innerWidth < 768) { // Tablets and mobile
+        return '0% -25% 0% -25%'; // Detects center in the middle 50% of the viewport
+      }
+      return '0% -40% 0% -40%'; // Detects center in the middle 20% of the viewport for desktop
+    };
 
     // Observer for centered glow effect
     const centerObserver = new IntersectionObserver(
@@ -60,7 +67,7 @@ const PhotoGrid: React.FC<PhotoGridProps> = ({ photos, onPhotoClick }) => {
       },
       {
         root: null, // viewport
-        rootMargin: '0% -40% 0% -40%', // Defines a vertical strip in the middle 20% of the viewport
+        rootMargin: getCenterObserverMargin(),
         threshold: 0.5, // At least 50% of the element must be in the strip to be "centered"
       }
     );
