@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { memo } from 'react';
 import { Photo } from '../types';
 
 interface PhotoItemProps {
@@ -35,4 +35,4 @@ const PhotoItem: React.FC<PhotoItemProps> = ({ photo, onClick, isVisible, isCent
   );
 };
 
-export default PhotoItem;
+export default memo(PhotoItem);

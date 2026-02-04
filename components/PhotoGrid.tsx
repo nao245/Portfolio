@@ -42,7 +42,7 @@ const PhotoGrid: React.FC<PhotoGridProps> = ({ photos, onPhotoClick }) => {
     );
     
     const getCenterObserverMargin = () => {
-      if (window.innerWidth < 768) { // Tablets and mobile
+      if (window.innerWidth < 1024) { // Tablets (portrait/landscape) and mobile
         return '0% -25% 0% -25%'; // Detects center in the middle 50% of the viewport
       }
       return '0% -40% 0% -40%'; // Detects center in the middle 20% of the viewport for desktop
@@ -85,7 +85,7 @@ const PhotoGrid: React.FC<PhotoGridProps> = ({ photos, onPhotoClick }) => {
   }, [photos]);
 
   return (
-    <div ref={gridRef} className="flex-shrink-0 h-screen bg-[#050608] flex flex-nowrap items-center gap-16 sm:gap-32 px-8 sm:px-[20vw]">
+    <div ref={gridRef} className="flex-shrink-0 h-screen bg-[#050608] flex flex-nowrap items-center gap-16 sm:gap-32 pl-8 sm:pl-[20vw] pr-8 sm:pr-[40vw]">
       {photos.map((photo, index) => {
         return (
           <PhotoItem 
