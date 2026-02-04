@@ -7,11 +7,13 @@ interface PhotoItemProps {
   onClick: () => void;
   isVisible: boolean;
   isCentered: boolean;
+  isMobile: boolean;
 }
 
-const PhotoItem: React.FC<PhotoItemProps> = ({ photo, onClick, isVisible, isCentered }) => {
+const PhotoItem: React.FC<PhotoItemProps> = ({ photo, onClick, isVisible, isCentered, isMobile }) => {
   const visibilityClass = isVisible ? "opacity-100 translate-y-0 scale-100" : "opacity-0 translate-y-10 scale-95";
-  const glowClass = isCentered ? "opacity-100" : "opacity-0";
+  const glowClass = (isCentered && !isMobile) ? "opacity-100" : "opacity-0";
+  const colorClass = (isMobile || isCentered) ? 'grayscale-0' : 'grayscale';
 
   return (
     <div 
@@ -27,7 +29,7 @@ const PhotoItem: React.FC<PhotoItemProps> = ({ photo, onClick, isVisible, isCent
         <img 
           src={photo.src} 
           alt={photo.alt}
-          className={`h-full w-auto object-cover transition-all duration-1000 ease-in-out ${isCentered ? 'grayscale-0' : 'grayscale'}`}
+          className={`h-full w-auto object-cover transition-all duration-1000 ease-in-out ${colorClass}`}
           loading="lazy"
         />
       </div>

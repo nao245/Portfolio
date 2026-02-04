@@ -6,9 +6,10 @@ import PhotoItem from './PhotoItem';
 interface PhotoGridProps {
   photos: Photo[];
   onPhotoClick: (index: number) => void;
+  isMobile: boolean;
 }
 
-const PhotoGrid: React.FC<PhotoGridProps> = ({ photos, onPhotoClick }) => {
+const PhotoGrid: React.FC<PhotoGridProps> = ({ photos, onPhotoClick, isMobile }) => {
   const [visiblePhotos, setVisiblePhotos] = useState<Set<string>>(new Set());
   const [centeredPhotoId, setCenteredPhotoId] = useState<string | null>(null);
   const gridRef = useRef<HTMLDivElement>(null);
@@ -42,10 +43,12 @@ const PhotoGrid: React.FC<PhotoGridProps> = ({ photos, onPhotoClick }) => {
     );
     
     const getCenterObserverMargin = () => {
-      if (window.innerWidth < 1024) { // Tablets (portrait/landscape) and mobile
-        return '0% -25% 0% -25%'; // Detects center in the middle 50% of the viewport
+      // Use a robust check for touch primary input devices (covers tablets and phones)
+      const isTouchDevice = window.matchMedia('(pointer: coarse)').matches;
+      if (isTouchDevice) {
+        return '0% -35% 0% -35%'; // Narrower detection area for touch screens (middle 30%)
       }
-      return '0% -40% 0% -40%'; // Detects center in the middle 20% of the viewport for desktop
+      return '0% -40% 0% -40%'; // Narrower detection area for mouse-driven devices (middle 20%)
     };
 
     // Observer for centered glow effect
@@ -68,7 +71,7 @@ const PhotoGrid: React.FC<PhotoGridProps> = ({ photos, onPhotoClick }) => {
       {
         root: null, // viewport
         rootMargin: getCenterObserverMargin(),
-        threshold: 0.5, // At least 50% of the element must be in the strip to be "centered"
+        threshold: 0.75, // Stricter threshold to prevent flickering on scroll settle
       }
     );
 
@@ -94,6 +97,7 @@ const PhotoGrid: React.FC<PhotoGridProps> = ({ photos, onPhotoClick }) => {
             onClick={() => onPhotoClick(index)}
             isVisible={visiblePhotos.has(photo.id)}
             isCentered={centeredPhotoId === photo.id}
+            isMobile={isMobile}
           />
         );
       })}

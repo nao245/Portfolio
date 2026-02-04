@@ -11,6 +11,7 @@ const App: React.FC = () => {
   const [photos] = useState<Photo[]>(initialPhotos);
   const [selectedPhotoIndex, setSelectedPhotoIndex] = useState<number | null>(null);
   const [scrollProgress, setScrollProgress] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
   
   const containerRef = useRef<HTMLDivElement>(null);
   
@@ -26,6 +27,15 @@ const App: React.FC = () => {
   const handleCloseModal = () => {
     setSelectedPhotoIndex(null);
   };
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -102,6 +112,7 @@ const App: React.FC = () => {
         <PhotoGrid 
           photos={photos} 
           onPhotoClick={handleSelectPhoto}
+          isMobile={isMobile}
         />
       </div>
 
