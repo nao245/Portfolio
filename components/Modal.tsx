@@ -6,31 +6,25 @@ import LocationMarkerIcon from './icons/LocationMarkerIcon';
 import CalendarIcon from './icons/CalendarIcon';
 import CameraIcon from './icons/CameraIcon';
 import SettingsIcon from './icons/SettingsIcon';
-import ChevronLeftIcon from './icons/ChevronLeftIcon';
-import ChevronRightIcon from './icons/ChevronRightIcon';
 
 interface ModalProps {
   photos: Photo[];
   currentIndex: number;
   onClose: () => void;
-  onNext: () => void;
-  onPrev: () => void;
 }
 
-const Modal: React.FC<ModalProps> = ({ photos, currentIndex, onClose, onNext, onPrev }) => {
+const Modal: React.FC<ModalProps> = ({ photos, currentIndex, onClose }) => {
   const photo = photos[currentIndex];
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') onClose();
-      if (event.key === 'ArrowRight') onNext();
-      if (event.key === 'ArrowLeft') onPrev();
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [onClose, onNext, onPrev]);
+  }, [onClose]);
 
   const InfoRow: React.FC<{ icon: React.ReactNode; label: string; value?: string; isTextarea?: boolean; }> = ({ icon, label, value, isTextarea = false }) => {
     if (!value && label !== "作品解説") {
@@ -108,27 +102,6 @@ const Modal: React.FC<ModalProps> = ({ photos, currentIndex, onClose, onNext, on
         <XIcon />
       </button>
 
-      {/* Prev Button */}
-      {currentIndex > 0 && (
-        <button
-          onClick={onPrev}
-          className="absolute left-4 sm:left-8 top-1/2 -translate-y-1/2 text-white/30 hover:text-white hover:bg-white/10 p-3 sm:p-4 rounded-full transition-all"
-          aria-label="前の写真へ"
-        >
-          <ChevronLeftIcon />
-        </button>
-      )}
-
-      {/* Next Button */}
-      {currentIndex < photos.length - 1 && (
-        <button
-          onClick={onNext}
-          className="absolute right-4 sm:right-8 top-1/2 -translate-y-1/2 text-white/30 hover:text-white hover:bg-white/10 p-3 sm:p-4 rounded-full transition-all"
-          aria-label="次の写真へ"
-        >
-          <ChevronRightIcon />
-        </button>
-      )}
     </div>
   );
 };

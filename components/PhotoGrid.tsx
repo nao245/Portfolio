@@ -10,13 +10,15 @@ interface PhotoGridProps {
 
 const PhotoGrid: React.FC<PhotoGridProps> = ({ photos, onPhotoClick }) => {
   const [visiblePhotos, setVisiblePhotos] = useState<Set<string>>(new Set());
+  const [centeredPhotoId, setCenteredPhotoId] = useState<string | null>(null);
   const gridRef = useRef<HTMLDivElement>(null);
 
   useLayoutEffect(() => {
     const grid = gridRef.current;
     if (!grid) return;
 
-    const observer = new IntersectionObserver(
+    // Observer for fade-in visibility
+    const visibilityObserver = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
@@ -28,23 +30,51 @@ const PhotoGrid: React.FC<PhotoGridProps> = ({ photos, onPhotoClick }) => {
                 newSet.add(id);
                 return newSet;
               });
-              observer.unobserve(entry.target);
+              visibilityObserver.unobserve(entry.target);
             }
           }
         });
       },
       {
-        // By not specifying a 'root', the observer defaults to the browser's viewport.
-        // This is a more robust method for detecting visibility within a nested scroller.
         rootMargin: '0px 200px 0px 200px',
         threshold: 0.1,
       }
     );
 
-    const elements = Array.from(grid.children);
-    elements.forEach((el) => observer.observe(el as HTMLElement));
+    // Observer for centered glow effect
+    const centerObserver = new IntersectionObserver(
+      (entries) => {
+        setCenteredPhotoId(currentCenteredId => {
+          const newlyCenteredEntry = entries.find(e => e.isIntersecting);
+          if (newlyCenteredEntry) {
+            return (newlyCenteredEntry.target as HTMLElement).dataset.photoid || null;
+          }
+          const currentEntryIsLeaving = entries.some(e => 
+            (e.target as HTMLElement).dataset.photoid === currentCenteredId && !e.isIntersecting
+          );
+          if (currentEntryIsLeaving) {
+            return null;
+          }
+          return currentCenteredId;
+        });
+      },
+      {
+        root: null, // viewport
+        rootMargin: '0% -40% 0% -40%', // Defines a vertical strip in the middle 20% of the viewport
+        threshold: 0.5, // At least 50% of the element must be in the strip to be "centered"
+      }
+    );
 
-    return () => observer.disconnect();
+    const elements = Array.from(grid.children);
+    elements.forEach((el) => {
+      visibilityObserver.observe(el as HTMLElement);
+      centerObserver.observe(el as HTMLElement);
+    });
+
+    return () => {
+      visibilityObserver.disconnect();
+      centerObserver.disconnect();
+    };
   }, [photos]);
 
   return (
@@ -56,6 +86,7 @@ const PhotoGrid: React.FC<PhotoGridProps> = ({ photos, onPhotoClick }) => {
             photo={photo} 
             onClick={() => onPhotoClick(index)}
             isVisible={visiblePhotos.has(photo.id)}
+            isCentered={centeredPhotoId === photo.id}
           />
         );
       })}

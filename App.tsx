@@ -27,20 +27,6 @@ const App: React.FC = () => {
     setSelectedPhotoIndex(null);
   };
 
-  const handleNextPhoto = useCallback(() => {
-    if (selectedPhotoIndex === null) return;
-    setSelectedPhotoIndex(prevIndex => 
-      prevIndex !== null && prevIndex < photos.length - 1 ? prevIndex + 1 : prevIndex
-    );
-  }, [selectedPhotoIndex, photos.length]);
-
-  const handlePrevPhoto = useCallback(() => {
-    if (selectedPhotoIndex === null) return;
-    setSelectedPhotoIndex(prevIndex => 
-      prevIndex !== null && prevIndex > 0 ? prevIndex - 1 : prevIndex
-    );
-  }, [selectedPhotoIndex]);
-
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
@@ -124,8 +110,6 @@ const App: React.FC = () => {
           photos={photos}
           currentIndex={selectedPhotoIndex}
           onClose={handleCloseModal}
-          onNext={handleNextPhoto}
-          onPrev={handlePrevPhoto}
         />
       )}
 
