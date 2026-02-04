@@ -1,5 +1,5 @@
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { Photo } from './types';
 import PhotoGrid from './components/PhotoGrid';
 import Modal from './components/Modal';
@@ -8,37 +8,54 @@ import { initialPhotos, DEFAULT_HERO_PHOTO_ID } from './data/photos';
 import ChevronDownIcon from './components/icons/ChevronDownIcon';
 
 const App: React.FC = () => {
-  // Owner mode state and handlers are removed. Photos are now read-only.
   const [photos] = useState<Photo[]>(initialPhotos);
-  const [selectedPhoto, setSelectedPhoto] = useState<Photo | null>(null);
+  const [selectedPhotoIndex, setSelectedPhotoIndex] = useState<number | null>(null);
   const [scrollProgress, setScrollProgress] = useState(0);
   
   const containerRef = useRef<HTMLDivElement>(null);
   
-  // The hero image is determined once on load and doesn't change.
   const [heroImageUrl] = useState(() => {
     const hero = initialPhotos.find(p => p.id === DEFAULT_HERO_PHOTO_ID);
     return getHighResUrl(hero || initialPhotos[0]);
   });
+
+  const handleSelectPhoto = (index: number) => {
+    setSelectedPhotoIndex(index);
+  };
+
+  const handleCloseModal = () => {
+    setSelectedPhotoIndex(null);
+  };
+
+  const handleNextPhoto = useCallback(() => {
+    if (selectedPhotoIndex === null) return;
+    setSelectedPhotoIndex(prevIndex => 
+      prevIndex !== null && prevIndex < photos.length - 1 ? prevIndex + 1 : prevIndex
+    );
+  }, [selectedPhotoIndex, photos.length]);
+
+  const handlePrevPhoto = useCallback(() => {
+    if (selectedPhotoIndex === null) return;
+    setSelectedPhotoIndex(prevIndex => 
+      prevIndex !== null && prevIndex > 0 ? prevIndex - 1 : prevIndex
+    );
+  }, [selectedPhotoIndex]);
 
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
 
     const handleScroll = () => {
-      // Calculate progress (title animation completes within the first 40% of the viewport width)
       const progress = Math.min(container.scrollLeft / (window.innerWidth * 0.4), 1);
       setScrollProgress(progress);
     };
 
     const handleWheel = (e: WheelEvent) => {
-      // Allow vertical scrolling to control horizontal movement for better UX.
       if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
         container.scrollLeft += e.deltaY * 1.5;
       }
     };
 
-    // Owner mode keydown listener is removed.
     container.addEventListener('scroll', handleScroll, { passive: true });
     container.addEventListener('wheel', handleWheel, { passive: true });
 
@@ -46,7 +63,7 @@ const App: React.FC = () => {
       container.removeEventListener('scroll', handleScroll);
       container.removeEventListener('wheel', handleWheel);
     };
-  }, []); // Dependency array is now empty.
+  }, []);
 
   return (
     <div className="h-screen w-screen overflow-hidden bg-[#050608] text-gray-100 font-lato select-none">
@@ -89,6 +106,7 @@ const App: React.FC = () => {
           <button 
             onClick={() => containerRef.current?.scrollTo({ left: window.innerWidth, behavior: 'smooth' })}
             className="absolute bottom-10 left-1/2 -translate-x-1/2 z-10 text-white/30 hover:text-orange-500 transition-colors"
+            aria-label="Scroll to gallery"
           >
             <div className="rotate-[-90deg]"><ChevronDownIcon /></div>
           </button>
@@ -97,21 +115,19 @@ const App: React.FC = () => {
         {/* Gallery Items */}
         <PhotoGrid 
           photos={photos} 
-          onPhotoClick={setSelectedPhoto}
-          scrollContainerRef={containerRef}
+          onPhotoClick={handleSelectPhoto}
         />
       </div>
 
-      {/* Owner mode UI (buttons) is removed. */}
-
-      {selectedPhoto && (
+      {selectedPhotoIndex !== null && (
         <Modal 
-          photo={selectedPhoto} 
-          onClose={() => setSelectedPhoto(null)}
+          photos={photos}
+          currentIndex={selectedPhotoIndex}
+          onClose={handleCloseModal}
+          onNext={handleNextPhoto}
+          onPrev={handlePrevPhoto}
         />
       )}
-
-      {/* PasscodeModal is removed. */}
 
       <style>{`
         .no-scrollbar::-webkit-scrollbar { display: none; }

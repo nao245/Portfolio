@@ -5,18 +5,16 @@ import PhotoItem from './PhotoItem';
 
 interface PhotoGridProps {
   photos: Photo[];
-  onPhotoClick: (photo: Photo) => void;
-  scrollContainerRef: React.RefObject<HTMLDivElement>;
+  onPhotoClick: (index: number) => void;
 }
 
-const PhotoGrid: React.FC<PhotoGridProps> = ({ photos, onPhotoClick, scrollContainerRef }) => {
+const PhotoGrid: React.FC<PhotoGridProps> = ({ photos, onPhotoClick }) => {
   const [visiblePhotos, setVisiblePhotos] = useState<Set<string>>(new Set());
   const gridRef = useRef<HTMLDivElement>(null);
 
   useLayoutEffect(() => {
-    const container = scrollContainerRef.current;
     const grid = gridRef.current;
-    if (!container || !grid) return;
+    if (!grid) return;
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -36,7 +34,8 @@ const PhotoGrid: React.FC<PhotoGridProps> = ({ photos, onPhotoClick, scrollConta
         });
       },
       {
-        root: container,
+        // By not specifying a 'root', the observer defaults to the browser's viewport.
+        // This is a more robust method for detecting visibility within a nested scroller.
         rootMargin: '0px 200px 0px 200px',
         threshold: 0.1,
       }
@@ -46,16 +45,16 @@ const PhotoGrid: React.FC<PhotoGridProps> = ({ photos, onPhotoClick, scrollConta
     elements.forEach((el) => observer.observe(el as HTMLElement));
 
     return () => observer.disconnect();
-  }, [photos, scrollContainerRef]);
+  }, [photos]);
 
   return (
     <div ref={gridRef} className="flex-shrink-0 h-screen bg-[#050608] flex flex-nowrap items-center gap-16 sm:gap-32 px-8 sm:px-[20vw]">
-      {photos.map((photo) => {
+      {photos.map((photo, index) => {
         return (
           <PhotoItem 
             key={photo.id} 
             photo={photo} 
-            onClick={() => onPhotoClick(photo)}
+            onClick={() => onPhotoClick(index)}
             isVisible={visiblePhotos.has(photo.id)}
           />
         );
