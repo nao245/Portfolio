@@ -13,6 +13,7 @@ const PhotoGrid: React.FC<PhotoGridProps> = ({ photos, onPhotoClick, isMobile })
   const [visiblePhotos, setVisiblePhotos] = useState<Set<string>>(new Set());
   const [centeredPhotoId, setCenteredPhotoId] = useState<string | null>(null);
   const gridRef = useRef<HTMLDivElement>(null);
+  const intersectingElementsRef = useRef(new Map<Element, number>());
 
   useLayoutEffect(() => {
     const grid = gridRef.current;
@@ -46,32 +47,49 @@ const PhotoGrid: React.FC<PhotoGridProps> = ({ photos, onPhotoClick, isMobile })
       // Use a robust check for touch primary input devices (covers tablets and phones)
       const isTouchDevice = window.matchMedia('(pointer: coarse)').matches;
       if (isTouchDevice) {
-        return '0% -35% 0% -35%'; // Narrower detection area for touch screens (middle 30%)
+        return '0% -35% 0% -35%'; // Detection area in the middle 30% of the screen
       }
-      return '0% -40% 0% -40%'; // Narrower detection area for mouse-driven devices (middle 20%)
+      return '0% -40% 0% -40%'; // Detection area in the middle 20% of the screen
     };
+    
+    const intersectingElements = intersectingElementsRef.current;
+    intersectingElements.clear();
+
+    const updateCenteredPhoto = () => {
+        let maxRatio = 0;
+        let centeredElement: Element | null = null;
+        
+        intersectingElements.forEach((ratio, element) => {
+            if (ratio > maxRatio) {
+                maxRatio = ratio;
+                centeredElement = element;
+            }
+        });
+        
+        const newCenteredId = centeredElement ? (centeredElement as HTMLElement).dataset.photoid || null : null;
+        setCenteredPhotoId(currentId => (currentId !== newCenteredId ? newCenteredId : currentId));
+    };
+
 
     // Observer for centered glow effect
     const centerObserver = new IntersectionObserver(
       (entries) => {
-        setCenteredPhotoId(currentCenteredId => {
-          const newlyCenteredEntry = entries.find(e => e.isIntersecting);
-          if (newlyCenteredEntry) {
-            return (newlyCenteredEntry.target as HTMLElement).dataset.photoid || null;
-          }
-          const currentEntryIsLeaving = entries.some(e => 
-            (e.target as HTMLElement).dataset.photoid === currentCenteredId && !e.isIntersecting
-          );
-          if (currentEntryIsLeaving) {
-            return null;
-          }
-          return currentCenteredId;
+        entries.forEach(entry => {
+            if (entry.isIntersecting && entry.intersectionRatio > 0) {
+                intersectingElements.set(entry.target, entry.intersectionRatio);
+            } else {
+                intersectingElements.delete(entry.target);
+            }
         });
+        updateCenteredPhoto();
       },
       {
         root: null, // viewport
         rootMargin: getCenterObserverMargin(),
-        threshold: 0.75, // Stricter threshold to prevent flickering on scroll settle
+        // An array of thresholds from 0.0 to 1.0. This makes the observer fire
+        // whenever the intersection ratio crosses one of these values, effectively
+        // giving us continuous updates to find the most centered item.
+        threshold: Array.from({ length: 101 }, (_, i) => i / 100),
       }
     );
 

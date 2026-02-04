@@ -18,7 +18,7 @@ const PhotoItem: React.FC<PhotoItemProps> = ({ photo, onClick, isVisible, isCent
   return (
     <div 
       data-photoid={photo.id}
-      className={`h-[40vh] sm:h-[50vh] relative group cursor-pointer transition-all duration-700 ease-out flex-shrink-0 ${visibilityClass}`}
+      className={`h-[40vh] sm:h-[50vh] max-w-[80vw] sm:max-w-none relative group cursor-pointer transition-all duration-700 ease-out flex-shrink-0 ${visibilityClass}`}
       onClick={onClick}
     >
       {/* New white glow based on scroll position */}
