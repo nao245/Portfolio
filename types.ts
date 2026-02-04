@@ -10,5 +10,4 @@ export interface Photo {
   lens?: string;
   settings?: string;
   description?: string;
-  glowColors?: string[];
 }

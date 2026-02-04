@@ -12,18 +12,11 @@ interface PhotoItemProps {
 
 const PhotoItem: React.FC<PhotoItemProps> = ({ photo, onClick, isVisible, isCentered, isMobile }) => {
   const visibilityClass = isVisible ? "opacity-100" : "opacity-0";
-  const glowClass = (isCentered && !isMobile) ? "opacity-30 animate-subtle-pulse" : "opacity-0";
+  const glowClass = (isCentered && !isMobile) ? "opacity-25 animate-subtle-pulse" : "opacity-0";
 
   const transformStyle = {
     transform: `translateY(${isVisible ? '0' : '2.5rem'}) scale(${isVisible ? ((isCentered && !isMobile) ? 1.05 : 1.0) : 0.95})`,
   };
-  
-  const glowStyle = (photo.glowColors && !isMobile)
-    ? {
-        backgroundImage: `radial-gradient(circle at 50% 50%, ${photo.glowColors[0]} 0%, ${photo.glowColors[1]} 60%, transparent 80%)`,
-        backgroundColor: 'transparent',
-      }
-    : {};
 
   return (
     <div 
@@ -32,10 +25,9 @@ const PhotoItem: React.FC<PhotoItemProps> = ({ photo, onClick, isVisible, isCent
       style={transformStyle}
       onClick={onClick}
     >
-      {/* Dynamic colored glow based on scroll position */}
+      {/* Optimized white glow effect */}
       <div 
-        className={`absolute inset-0 -z-10 bg-white/20 blur-[70px] transition-opacity duration-1000 rounded-full scale-150 ${glowClass}`}
-        style={glowStyle}
+        className={`absolute inset-0 -z-10 bg-white blur-[70px] transition-opacity duration-1000 rounded-full scale-150 ${glowClass}`}
       ></div>
 
       {/* Frame */}

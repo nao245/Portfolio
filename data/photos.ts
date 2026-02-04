@@ -15,7 +15,6 @@ export const initialPhotos: Photo[] = [
     lens: '35mm f/1.4',
     settings: '1/60s, f/1.4, ISO 800',
     description: '',
-    glowColors: ['#2a3a8a', '#7a2a8a'],
   },
   {
     id: '2',
@@ -27,7 +26,6 @@ export const initialPhotos: Photo[] = [
     lens: '23mm f/2',
     settings: '1/125s, f/2.0, ISO 400',
     description: '',
-    glowColors: ['#f000b8', '#00f0e0'],
   },
   {
     id: '3',
@@ -39,7 +37,6 @@ export const initialPhotos: Photo[] = [
     lens: '50mm f/1.8',
     settings: '1/1000s, f/2.8, ISO 100',
     description: '',
-    glowColors: ['#a8e063', '#f0e68c'],
   },
   {
     id: '4',
@@ -51,7 +48,6 @@ export const initialPhotos: Photo[] = [
     lens: '28mm f/2.8',
     settings: '1/250s, f/8.0, ISO 200',
     description: '',
-    glowColors: ['#bdc3c7', '#2c3e50'],
   },
   {
     id: '5',
@@ -63,6 +59,5 @@ export const initialPhotos: Photo[] = [
     lens: '85mm f/1.4',
     settings: '1/4000s, f/1.4, ISO 100',
     description: '',
-    glowColors: ['#ff8c00', '#ffd700'],
   }
 ];
