@@ -10,10 +10,12 @@ import ChevronDownIcon from './components/icons/ChevronDownIcon';
 const App: React.FC = () => {
   const [photos] = useState<Photo[]>(initialPhotos);
   const [selectedPhotoIndex, setSelectedPhotoIndex] = useState<number | null>(null);
-  const [scrollProgress, setScrollProgress] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
   
   const containerRef = useRef<HTMLDivElement>(null);
+  const headerRef = useRef<HTMLDivElement>(null);
+  const h1Ref = useRef<HTMLHeadingElement>(null);
+  const pRef = useRef<HTMLParagraphElement>(null);
   
   const [heroImageUrl] = useState(() => {
     const hero = initialPhotos.find(p => p.id === DEFAULT_HERO_PHOTO_ID);
@@ -51,11 +53,21 @@ const App: React.FC = () => {
     if (!container) return;
 
     const handleScroll = () => {
-        const heroSectionWidth = container.clientWidth;
-        if (heroSectionWidth > 0) {
-            const progress = Math.min(container.scrollLeft / heroSectionWidth, 1);
-            setScrollProgress(progress);
+      const heroSectionWidth = container.clientWidth;
+      if (heroSectionWidth > 0) {
+        const progress = Math.min(container.scrollLeft / heroSectionWidth, 1);
+        
+        // Direct DOM manipulation for performance
+        if (headerRef.current) {
+          headerRef.current.style.transform = `translate3d(0, ${-progress * 35}dvh, 0)`;
         }
+        if (h1Ref.current) {
+          h1Ref.current.style.transform = `scale(${1 - (progress * 0.7)})`;
+        }
+        if (pRef.current) {
+          pRef.current.style.transform = `translateY(${progress * 70}dvh) scale(${1 - (progress * 0.3)})`;
+        }
+      }
     };
     
     container.addEventListener('scroll', handleScroll, { passive: true });
@@ -68,24 +80,21 @@ const App: React.FC = () => {
       
       {/* Dynamic Overlay Header */}
       <div 
+        ref={headerRef}
         className="fixed inset-0 z-50 pointer-events-none flex flex-col items-center justify-center"
-        style={{
-          transform: `translate3d(0, ${-scrollProgress * 35}dvh, 0)`,
-        }}
+        style={{ willChange: 'transform' }}
       >
         <h1 
+          ref={h1Ref}
           className="text-6xl sm:text-7xl md:text-8xl font-bold font-playfair tracking-[0.15em] text-white"
-          style={{
-            transform: `scale(${1 - (scrollProgress * 0.7)})`,
-          }}
+          style={{ willChange: 'transform' }}
         >
           Gallery
         </h1>
         <p 
+          ref={pRef}
           className="text-[10px] sm:text-xs tracking-[0.4em] uppercase text-orange-500 font-bold mt-2"
-          style={{ 
-            transform: `translateY(${scrollProgress * 70}dvh) scale(${1 - (scrollProgress * 0.3)})`
-          }}
+          style={{ willChange: 'transform' }}
         >
           by Nao
         </p>

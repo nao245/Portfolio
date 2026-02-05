@@ -16,6 +16,7 @@ const PhotoItem: React.FC<PhotoItemProps> = ({ photo, onClick, isVisible, isCent
 
   const transformStyle = {
     transform: `translateY(${isVisible ? '0' : '2.5rem'}) scale(${isVisible ? ((isCentered && !isMobile) ? 1.05 : 1.0) : 0.95})`,
+    willChange: 'transform' as const,
   };
 
   return (
@@ -28,6 +29,7 @@ const PhotoItem: React.FC<PhotoItemProps> = ({ photo, onClick, isVisible, isCent
       {/* Optimized white glow effect */}
       <div 
         className={`absolute inset-0 -z-10 bg-white blur-[70px] transition-opacity duration-1000 rounded-full scale-150 ${glowClass}`}
+        style={{ willChange: 'opacity, transform' }}
       ></div>
 
       {/* Frame */}
