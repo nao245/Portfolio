@@ -1,6 +1,7 @@
 
 import React, { useEffect } from 'react';
 import { Photo } from '../types';
+import { getHighResUrl } from '../utils'; // Import the utility function
 import XIcon from './icons/XIcon';
 import LocationMarkerIcon from './icons/LocationMarkerIcon';
 import CalendarIcon from './icons/CalendarIcon';
@@ -59,7 +60,7 @@ const Modal: React.FC<ModalProps> = ({ photos, currentIndex, onClose }) => {
         {/* Image Side */}
         <div className="w-full md:w-2/3 h-[45vh] md:h-auto flex items-center justify-center bg-black/20 relative overflow-hidden group/img">
           <img 
-            src={photo.src}
+            src={getHighResUrl(photo)} // Use high-resolution image here
             alt={photo.alt}
             className="max-w-full max-h-full object-contain p-4 transition-transform duration-1000 group-hover/img:scale-105"
           />

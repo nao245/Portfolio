@@ -7,7 +7,8 @@ export const DEFAULT_HERO_PHOTO_ID = '1';
 export const initialPhotos: Photo[] = [
   {
     id: '1',
-    src: '/images/photo-01.jpg',
+    src: '/images/photo-01.jpg', // Optimized for web
+    highResSrc: '/images/photo-01.jpg', // Full resolution for modal
     alt: 'Midnight City',
     location: '東京, 日本',
     date: '2024/05/12',
@@ -19,6 +20,7 @@ export const initialPhotos: Photo[] = [
   {
     id: '2',
     src: '/images/photo-02a.jpg',
+    highResSrc: '/images/photo-02a.jpg',
     alt: 'Neon Horizon',
     location: '新宿',
     date: '2024/06/01',
@@ -30,6 +32,7 @@ export const initialPhotos: Photo[] = [
   {
     id: '3',
     src: '/images/photo-03.jpg',
+    highResSrc: '/images/photo-03.jpg',
     alt: 'Morning Dew',
     location: '長野',
     date: '2024/04/20',
@@ -41,6 +44,7 @@ export const initialPhotos: Photo[] = [
   {
     id: '4',
     src: '/images/photo-04.jpg',
+    highResSrc: '/images/photo-04.jpg',
     alt: 'Urban Symmetry',
     location: '銀座',
     date: '2024/07/15',
@@ -52,6 +56,7 @@ export const initialPhotos: Photo[] = [
   {
     id: '5',
     src: '/images/photo-05.jpg',
+    highResSrc: '/images/photo-05.jpg',
     alt: 'Golden Hour',
     location: '江の島',
     date: '2024/08/05',
