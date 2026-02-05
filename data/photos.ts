@@ -8,7 +8,7 @@ export const initialPhotos: Photo[] = [
   {
     id: '1',
     src: '/images/photo-01.jpg',
-    alt: '風鈴',
+    alt: 'Midnight City',
     location: '東京, 日本',
     date: '2024/05/12',
     camera: 'Sony A7R IV',

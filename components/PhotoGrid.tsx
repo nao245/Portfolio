@@ -18,7 +18,6 @@ const PhotoGrid: React.FC<PhotoGridProps> = ({ photos, onPhotoClick, isMobile })
     const grid = gridRef.current;
     if (!grid) return;
 
-    // Observer for fade-in visibility
     const visibilityObserver = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -45,29 +44,26 @@ const PhotoGrid: React.FC<PhotoGridProps> = ({ photos, onPhotoClick, isMobile })
     const getCenterObserverMargin = () => {
       const isTouchDevice = window.matchMedia('(pointer: coarse)').matches;
       if (isTouchDevice) {
-        return '0% -35% 0% -35%'; // Detection area in the middle 30% of the screen
+        return '0% -35% 0% -35%';
       }
-      return '0% -40% 0% -40%'; // Detection area in the middle 20% of the screen
+      return '0% -40% 0% -40%';
     };
     
-    // Optimized observer for centered glow effect
     const centerObserver = new IntersectionObserver(
       (entries) => {
-        // From all intersecting entries, find the one with the largest intersection area.
+        if (entries.length === 0) return;
         const centeredEntry = entries.reduce((prev, current) => {
           return (prev.intersectionRatio > current.intersectionRatio) ? prev : current;
         });
 
-        if (centeredEntry && centeredEntry.intersectionRatio > 0.1) { // Ensure it's significantly visible
+        if (centeredEntry && centeredEntry.intersectionRatio > 0.1) {
           const newCenteredId = (centeredEntry.target as HTMLElement).dataset.photoid || null;
-          // Only update state if the centered photo has actually changed to prevent unnecessary re-renders.
           setCenteredPhotoId(currentId => (currentId !== newCenteredId ? newCenteredId : currentId));
         }
       },
       {
-        root: null, // viewport
+        root: null,
         rootMargin: getCenterObserverMargin(),
-        // Check at a few key points instead of 101 times. This is a huge performance gain.
         threshold: [0.25, 0.5, 0.75, 1.0],
       }
     );
@@ -85,7 +81,7 @@ const PhotoGrid: React.FC<PhotoGridProps> = ({ photos, onPhotoClick, isMobile })
   }, [photos]);
 
   return (
-    <div ref={gridRef} className="flex-shrink-0 h-screen bg-[#050608] flex flex-nowrap items-center gap-16 sm:gap-32 pl-8 sm:pl-[20vw] pr-8 sm:pr-[40vw]">
+    <div ref={gridRef} className="flex-shrink-0 h-[100dvh] bg-[#050608] flex flex-nowrap items-center gap-16 sm:gap-32 pl-12 sm:pl-[25vw] pr-12 sm:pr-[45vw]">
       {photos.map((photo, index) => {
         return (
           <PhotoItem 

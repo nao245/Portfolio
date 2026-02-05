@@ -21,7 +21,7 @@ const PhotoItem: React.FC<PhotoItemProps> = ({ photo, onClick, isVisible, isCent
   return (
     <div 
       data-photoid={photo.id}
-      className={`h-[40vh] sm:h-[50vh] max-w-[80vw] sm:max-w-none relative group cursor-pointer transition-all duration-700 ease-out flex-shrink-0 snap-center ${visibilityClass}`}
+      className={`h-[40dvh] sm:h-[50dvh] max-w-[85vw] sm:max-w-none relative group cursor-pointer transition-all duration-700 ease-out flex-shrink-0 snap-center ${visibilityClass}`}
       style={transformStyle}
       onClick={onClick}
     >
